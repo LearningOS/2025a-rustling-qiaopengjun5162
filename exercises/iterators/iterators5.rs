@@ -11,8 +11,6 @@
 // Execute `rustlings hint iterators5` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
-
 use std::collections::HashMap;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -35,7 +33,12 @@ fn count_for(map: &HashMap<String, Progress>, value: Progress) -> usize {
 fn count_iterator(map: &HashMap<String, Progress>, value: Progress) -> usize {
     // map is a hashmap with String keys and Progress values.
     // map = { "variables1": Complete, "from_str": None, ... }
-    todo!();
+    // return the number of values in the map that are equal to value.
+    // 方式一
+    // map.values().filter(|&&val| val == value).count()
+
+    // 方式二
+    map.values().filter(|&v| v == &value).count()
 }
 
 fn count_collection_for(collection: &[HashMap<String, Progress>], value: Progress) -> usize {
@@ -54,7 +57,27 @@ fn count_collection_iterator(collection: &[HashMap<String, Progress>], value: Pr
     // collection is a slice of hashmaps.
     // collection = [{ "variables1": Complete, "from_str": None, ... },
     //     { "variables2": Complete, ... }, ... ]
-    todo!();
+    // return the number of values in the collection that are equal to value.
+    // 方式一
+    // collection
+    //     .iter()
+    //     .map(|map| map.values())
+    //     .flatten()
+    //     .filter(|&&progress| progress == value)
+    //     .count()
+
+    // 方式二
+    // collection
+    //     .iter()
+    //     .map(|map| map.values().filter(|&&progress| progress == value).count())
+    //     .sum::<usize>()
+
+    // 方式三
+    collection
+        .iter()
+        .flat_map(|map| map.values())
+        .filter(|&v| v == &value)
+        .count()
 }
 
 #[cfg(test)]
