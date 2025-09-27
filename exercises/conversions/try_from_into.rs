@@ -27,8 +27,6 @@ enum IntoColorError {
     IntConversion,
 }
 
-// I AM NOT DONE
-
 // Your task is to complete this implementation and return an Ok result of inner
 // type Color. You need to create an implementation for a tuple of three
 // integers, an array of three integers, and a slice of integers.
@@ -41,6 +39,17 @@ enum IntoColorError {
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        let (red, green, blue) = tuple;
+        // 1. 范围检查
+        if red < 0 || red > 255 || green < 0 || green > 255 || blue < 0 || blue > 255 {
+            return Err(IntoColorError::IntConversion);
+        }
+        // 2. 显式类型转换 (as u8)
+        Ok(Color {
+            red: red as u8,
+            green: green as u8,
+            blue: blue as u8,
+        })
     }
 }
 
@@ -48,6 +57,16 @@ impl TryFrom<(i16, i16, i16)> for Color {
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        let [red, green, blue] = arr;
+
+        if red < 0 || red > 255 || green < 0 || green > 255 || blue < 0 || blue > 255 {
+            return Err(IntoColorError::IntConversion);
+        }
+        Ok(Color {
+            red: red as u8,
+            green: green as u8,
+            blue: blue as u8,
+        })
     }
 }
 
@@ -55,6 +74,30 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        // 1. 检查切片长度是否恰好为 3
+        if slice.len() != 3 {
+            return Err(IntoColorError::BadLen);
+        }
+
+        // 2. 安全地提取 R, G, B 三个值。
+        // 由于切片长度已确认是 3，这里使用索引是安全的。
+        let red = slice[0];
+        let green = slice[1];
+        let blue = slice[2];
+
+        // 3. 检查 RGB 值的范围 (0..=255)
+        if red < 0 || red > 255 || green < 0 || green > 255 || blue < 0 || blue > 255 {
+            return Err(IntoColorError::IntConversion);
+        }
+
+        // 4. 返回成功的 Color 结构体
+        // 注意：由于输入的 i16 值已通过 0..=255 检查，
+        // Rust 会自动安全地将 i16 转换为 u8 (小类型转换)
+        Ok(Color {
+            red: red as u8,
+            green: green as u8,
+            blue: blue as u8,
+        })
     }
 }
 
