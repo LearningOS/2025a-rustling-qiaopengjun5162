@@ -1,14 +1,13 @@
 /*
-	bfs
-	This problem requires you to implement a basic BFS algorithm
+    bfs
+    This problem requires you to implement a basic BFS algorithm
 */
 
-//I AM NOT DONE
 use std::collections::VecDeque;
 
 // Define a graph
 struct Graph {
-    adj: Vec<Vec<usize>>, 
+    adj: Vec<Vec<usize>>,
 }
 
 impl Graph {
@@ -21,20 +20,50 @@ impl Graph {
 
     // Add an edge to the graph
     fn add_edge(&mut self, src: usize, dest: usize) {
-        self.adj[src].push(dest); 
-        self.adj[dest].push(src); 
+        self.adj[src].push(dest);
+        self.adj[dest].push(src);
     }
 
     // Perform a breadth-first search on the graph, return the order of visited nodes
     fn bfs_with_return(&self, start: usize) -> Vec<usize> {
-        
-		//TODO
+        let n = self.adj.len();
+        if n == 0 {
+            return vec![];
+        }
 
+        // 1. Initialization
+        // `visited` array to keep track of discovered nodes
+        let mut visited = vec![false; n];
+
+        // `queue` for managing the nodes to explore (FIFO order)
+        let mut queue: VecDeque<usize> = VecDeque::new();
+
+        // `visit_order` to store the final result sequence
         let mut visit_order = vec![];
+
+        // 2. Start the BFS
+        // Mark the start node as visited and enqueue it
+        visited[start] = true;
+        queue.push_back(start);
+
+        // 3. Main loop: Continue while there are nodes in the queue
+        while let Some(u) = queue.pop_front() {
+            // Dequeue the node and record it in the final order
+            visit_order.push(u);
+
+            // Explore all neighbors (v) of the current node (u)
+            for &v in &self.adj[u] {
+                // If the neighbor 'v' has not been visited
+                if !visited[v] {
+                    // Mark it as visited and enqueue it for later exploration
+                    visited[v] = true;
+                    queue.push_back(v);
+                }
+            }
+        }
         visit_order
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -84,4 +113,3 @@ mod tests {
         assert_eq!(visited_order, vec![0]);
     }
 }
-
